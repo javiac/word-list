@@ -12,3 +12,6 @@ pipenv shell
 
 
 npm install -g @angular/cli
+
+Connect to plytix db
+mongosh "mongodb://localhost:27017/plytix"
