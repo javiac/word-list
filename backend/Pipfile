@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 pymongo = "*"
+flask = "*"
+marshmallow = "*"
+flask-cors = "*"
 
 [dev-packages]
 
