@@ -19,7 +19,10 @@ export class WordsApiService {
   }
 
   public saveSortingChanges(data: any){
-    console.log('saveSortingChanges')
     return this.http.post(`${API_URL}/words/sort`, data);
+  }
+
+  public getAnagrams(value: string){
+    return this.http.get(`${API_URL}/words/anagrams?value=${value}`);
   }
 }

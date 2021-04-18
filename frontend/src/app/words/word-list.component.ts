@@ -18,7 +18,9 @@ export class WordListComponent implements OnInit, OnDestroy {
   private wordListSubscribtion: Subscription|null = null;
   public words: Word[] = [];
   private sortingChanges: ISortingChange[] = [];
-  private timeout: number | null = null;
+  private sortTimeout: number | null = null;
+  private searchTimeout: number | null = null;
+  public anagrams: string[] = [];
 
   constructor(private wordsApi: WordsApiService) {
   }
@@ -39,7 +41,7 @@ export class WordListComponent implements OnInit, OnDestroy {
     }
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  public drop(event: CdkDragDrop<string[]>) {
     if (event.previousIndex === event.currentIndex){
       return;
     }
@@ -48,15 +50,30 @@ export class WordListComponent implements OnInit, OnDestroy {
 
     this.sortingChanges.push({previousIndex: event.previousIndex, currentIndex: event.currentIndex});
 
-    if (this.timeout){
-      window.clearTimeout(this.timeout);
+    if (this.sortTimeout){
+      window.clearTimeout(this.sortTimeout);
     }
 
-    this.timeout = window.setTimeout(() => {
+    this.sortTimeout = window.setTimeout(() => {
       this.wordsApi.saveSortingChanges([...this.sortingChanges]).subscribe(() => {
         return;
       });
       this.sortingChanges = [];
-    }, 1000);
+    }, 500);
+  }
+
+  public onSearch(event: Event){
+    if (event.target){
+      if (this.searchTimeout){
+        window.clearTimeout(this.searchTimeout);
+      }
+
+      this.searchTimeout = window.setTimeout(() => {
+        this.anagrams = [];
+        this.wordsApi.getAnagrams((event.target  as HTMLInputElement).value).subscribe((result: any) => {
+          this.anagrams = result;
+        });
+      }, 500);
+    }
   }
 }

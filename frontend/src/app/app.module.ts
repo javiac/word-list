@@ -8,6 +8,7 @@ import { WordsApiService } from './words/word-api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { WordListComponent } from './words/word-list.component';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { WordListComponent } from './words/word-list.component';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    DragDropModule
+    DragDropModule,
+    MatInputModule
   ],
   providers: [WordsApiService],
   bootstrap: [AppComponent]
