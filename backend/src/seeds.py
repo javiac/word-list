@@ -26,8 +26,7 @@ result = client.plytix.words.insert_many([
     {'value': 'Frase', 'order':15, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
     {'value': 'fresa', 'order':16, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
     {'value': 'Integrarla', 'order':17, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
-    {'value': 'Irónicamente', 'order':18, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
-    {'value': 'refinamiento', 'order':19, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'refinamiento', 'order':18, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
     ])
 
 print('Inserted ', len(result.inserted_ids))
