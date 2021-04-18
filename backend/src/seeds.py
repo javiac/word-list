@@ -4,11 +4,30 @@ import datetime
 import pprint
 
 client = pymongo.MongoClient('mongodb://127.0.0.1:27017/')
-print(client.plytix.list_collection_names())
-pprint.pprint(client.plytix.words.find_one({'value':'bbb'}))
-result = client.plytix.words.insert_many([{'value': 'bbb', 'order':1, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()}])
 
-words = client.plytix.words.find()
+client.plytix.words.delete_many({})
 
-for word in words:
-    print(word);
+result = client.plytix.words.insert_many([
+    {'value': 'Inglaterra', 'order':0, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Conservadora', 'order':1, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'conversadora', 'order':2, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Irónicamente', 'order':3, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Escandalizar', 'order':4, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'zascandilear', 'order':5, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Enfriamiento', 'order':6, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Alegan', 'order':7, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Ángela', 'order':8, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Riesgo', 'order':9, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Sergio', 'order':10, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Amor', 'order':11, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Roma', 'order':12, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Nacionalista', 'order':13, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'altisonancia', 'order':14, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Frase', 'order':15, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'fresa', 'order':16, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Integrarla', 'order':17, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'Irónicamente', 'order':18, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    {'value': 'refinamiento', 'order':19, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
+    ])
+
+print('Inserted ', len(result.inserted_ids))

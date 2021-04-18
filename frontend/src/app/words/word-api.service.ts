@@ -17,4 +17,9 @@ export class WordsApiService {
   public getWords(): Observable<Word[]> {
     return this.http.get<Word[]>(`${API_URL}/words`);
   }
+
+  public saveSortingChanges(data: any){
+    console.log('saveSortingChanges')
+    return this.http.post(`${API_URL}/words/sort`, data);
+  }
 }
