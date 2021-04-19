@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import { Subscription } from 'rxjs';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
-import { Word } from './word.model';
+import { IWord, Word } from './word.model';
 import { WordsApiService } from './word-api.service';
 
 interface ISortingChange{
@@ -28,8 +28,8 @@ export class WordListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.wordListSubscribtion = this.wordsApi
       .getWords()
-      .subscribe(res => {
-          this.words = res;
+      .subscribe(result => {
+          this.words = result;
         },
         console.error
       );
@@ -75,5 +75,11 @@ export class WordListComponent implements OnInit, OnDestroy {
         });
       }, 500);
     }
+  }
+
+  public onDelete(word: IWord){
+    this.wordsApi.delete(word).subscribe(result => {
+      this.words = result;
+    });
   }
 }

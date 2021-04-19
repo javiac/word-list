@@ -9,6 +9,16 @@
   </mat-form-field>
 </form>
 
-<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-  <div class="example-box" *ngFor="let word of words" cdkDrag [ngClass]="{'highlighted': anagrams.includes(word.value)}">{{word.value}}</div>
+<div cdkDropList class="word-list" (cdkDropListDropped)="drop($event)">
+  <div class="example-box" *ngFor="let word of words" cdkDrag [ngClass]="{'highlighted': anagrams.includes(word.value)}">
+    {{word.value}}
+    <div>
+      <button mat-icon-button color="primary">
+            <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onDelete(word)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>
