@@ -1,2 +1,2 @@
 backend/public/dist
-backend/src/__pycache__
+backend/src/**/__pycache__/*.pyc

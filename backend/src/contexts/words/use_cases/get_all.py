@@ -1,12 +1,7 @@
 # coding=utf-8
 
 import pymongo
-from flask import Flask, jsonify, request, send_from_directory
-from flask_cors import CORS
-from bson.json_util import dumps
-import json
 from bson.code import Code
-from bson.objectid import ObjectId
 import datetime
 
 def get_all(searchText):
