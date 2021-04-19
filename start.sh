@@ -1,5 +1,5 @@
 #!/bin/bash
-mongod &
+sudo mongod &
 cd frontend
 ng serve &
 cd ../backend 
