@@ -8,6 +8,7 @@ import json
 from bson.code import Code
 from bson.objectid import ObjectId
 import datetime
+from src.contexts.words.use_cases.get_all import get_all
 
 app = Flask(__name__,
             static_url_path='', 
@@ -24,50 +25,7 @@ def get_words():
     words = []
 
     if(request.method == 'GET'):
-      if request.args.get('searchAnagram') is None:
-        result = collection.find({}).sort('order', 1)
-      else:
-        pipeline = [
-          { "$addFields":
-            {
-              "isAnagram":
-                  { "$function":
-                    {
-                        "body": Code("""
-                            function(value, searchValue) {
-                              function unaccent(str) {
-                                const map = {
-                                  'a' : 'á|à|ã|â|ä|À|Á|Ã|Â|Ä',
-                                  'e' : 'é|è|ê|ë|É|È|Ê|Ë',
-                                  'i' : 'í|ì|î|ï|Í|Ì|Î|Ï',
-                                  'o' : 'ó|ò|ô|õ|ö|Ó|Ò|Ô|Õ|Ö',
-                                  'u' : 'ú|ù|û|ü|Ú|Ù|Û|Ü',
-                                };
-
-                                for (var pattern in map) {
-                                  str = str.replace(new RegExp(map[pattern], 'g'), pattern);
-                                }
-
-                                return str;
-                              }
-
-                              return unaccent(value).toLowerCase().split('').sort().join().replace(/,/g, '') == unaccent(searchValue).toLowerCase().split('').sort().join().replace(/,/g, '')
-                        }
-                        """),
-                        "args": [ "$value",  request.args.get('searchAnagram')],
-                        "lang": "js"
-                    }
-                  },
-            }
-          },
-          {
-            "$match":{
-              "isAnagram": True
-            }
-          }
-        ]
-
-        result = collection.aggregate(pipeline)
+      words = get_all(request.args.get('searchAnagram'))
     elif request.method == 'DELETE':
       collection.delete_one({ "_id": ObjectId(request.args.get('id'))}) 
       index = 0 
@@ -75,12 +33,14 @@ def get_words():
         collection.update_one({'_id': word['_id']}, {'$set': {'order': index}})
         index+=1
       result = collection.find({}).sort('order', 1)
+      for word in result:
+          words.append(word)
     elif request.method == 'POST':
       word = json.loads(request.data)
       word['createdAt'] = datetime.datetime.now()
       word['updatedAt'] = datetime.datetime.now()
       word['order'] = -1
-      
+
       collection.insert_one(word)
 
       index = 0 
@@ -89,8 +49,7 @@ def get_words():
         index+=1
 
       result = collection.find({}).sort('order', 1)
-
-    for word in result:
+      for word in result:
           words.append(word)
 
     return dumps(words)
