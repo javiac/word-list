@@ -16,11 +16,13 @@ interface ISortingChange{
 })
 export class WordListComponent implements OnInit, OnDestroy {
   private wordListSubscribtion: Subscription|null = null;
-  public words: Word[] = [];
+  public words: IWord[] = [];
   private sortingChanges: ISortingChange[] = [];
   private sortTimeout: number | null = null;
   private searchTimeout: number | null = null;
   public anagrams: string[] = [];
+  public wordEditing: IWord | null = null;
+  public newWord: string | null = null;
 
   constructor(private wordsApi: WordsApiService) {
   }
@@ -70,7 +72,7 @@ export class WordListComponent implements OnInit, OnDestroy {
 
       this.searchTimeout = window.setTimeout(() => {
         this.anagrams = [];
-        this.wordsApi.getWords((event.target  as HTMLInputElement).value).subscribe((result: Word[]) => {
+        this.wordsApi.getWords((event.target  as HTMLInputElement).value).subscribe((result: IWord[]) => {
           this.anagrams = result.map(word => word.value);
         });
       }, 500);
@@ -80,6 +82,34 @@ export class WordListComponent implements OnInit, OnDestroy {
   public onDelete(word: IWord){
     this.wordsApi.delete(word).subscribe(result => {
       this.words = result;
+    });
+  }
+
+  public onEdit(word: IWord){
+    this.wordEditing = word;
+  }
+
+  public onUpdate(word: IWord){
+    this.wordsApi.save(word).subscribe(result => {
+      this.words = result;
+      this.wordEditing = null;
+    });
+  }
+
+  public onSave(){
+    if (!this.newWord){
+      return;
+    }
+
+    const newWord: IWord = {
+      value: this.newWord,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    this.wordsApi.save(newWord).subscribe(result => {
+      this.words = result;
+      this.newWord = null;
     });
   }
 }

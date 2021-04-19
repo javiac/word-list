@@ -7,6 +7,7 @@ from bson.json_util import dumps
 import json
 from bson.code import Code
 from bson.objectid import ObjectId
+import datetime
 
 app = Flask(__name__,
             static_url_path='', 
@@ -15,7 +16,7 @@ app = Flask(__name__,
             
 CORS(app)
 
-@app.route('/words', methods=['GET', 'DELETE'])
+@app.route('/words', methods=['GET', 'DELETE', 'POST'])
 def get_words():
     client = pymongo.MongoClient("localhost", 27017)
     collection = client.plytix.words
@@ -68,9 +69,25 @@ def get_words():
 
         result = collection.aggregate(pipeline)
     elif request.method == 'DELETE':
-      print('DELETE', request.args.get('id'))
-      print(request)
-      collection.delete_one({ "_id": ObjectId(request.args.get('id'))})  
+      collection.delete_one({ "_id": ObjectId(request.args.get('id'))}) 
+      index = 0 
+      for word in collection.find({}).sort('order', 1):
+        collection.update_one({'_id': word['_id']}, {'$set': {'order': index}})
+        index+=1
+      result = collection.find({}).sort('order', 1)
+    elif request.method == 'POST':
+      word = json.loads(request.data)
+      word['createdAt'] = datetime.datetime.now()
+      word['updatedAt'] = datetime.datetime.now()
+      word['order'] = -1
+      
+      collection.insert_one(word)
+
+      index = 0 
+      for word in collection.find({}).sort('order', 1):
+        collection.update_one({'_id': word['_id']}, {'$set': {'order': index}})
+        index+=1
+
       result = collection.find({}).sort('order', 1)
 
     for word in result:
@@ -113,6 +130,24 @@ def save_sorting():
         index+=1
     
   return dumps({'success':True})
+
+@app.route('/words/<id>', methods=['POST'])
+def update_word(id):
+    client = pymongo.MongoClient("localhost", 27017)
+    collection = client.plytix.words
+
+    word = json.loads(request.data)
+    collection.update_one({'_id': ObjectId(id)}, {'$set': {
+      'value': word['value'],
+      'updatedAt': datetime.datetime.now()
+    }})
+    result = collection.find({}).sort('order', 1)
+
+    words = []
+    for word in result:
+      words.append(word)
+
+    return dumps(words)
 
 @app.route('/')
 def root():

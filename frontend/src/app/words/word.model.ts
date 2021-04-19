@@ -1,6 +1,6 @@
 export interface IWord{
     value: string;
-    order: number;
+    order?: number;
     _id?: {'$oid': string};
     updatedAt?: Date;
     createdAt?: Date;

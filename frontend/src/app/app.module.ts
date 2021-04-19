@@ -11,6 +11,7 @@ import { WordListComponent } from './words/word-list.component';
 import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {MatButtonModule} from '@angular/material/button';
     DragDropModule,
     MatInputModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    FormsModule
   ],
   providers: [WordsApiService],
   bootstrap: [AppComponent]
