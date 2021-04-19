@@ -70,8 +70,8 @@ export class WordListComponent implements OnInit, OnDestroy {
 
       this.searchTimeout = window.setTimeout(() => {
         this.anagrams = [];
-        this.wordsApi.getAnagrams((event.target  as HTMLInputElement).value).subscribe((result: any) => {
-          this.anagrams = result;
+        this.wordsApi.getWords((event.target  as HTMLInputElement).value).subscribe((result: Word[]) => {
+          this.anagrams = result.map(word => word.value);
         });
       }, 500);
     }

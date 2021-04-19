@@ -1,14 +1,14 @@
 <div style="text-align:center">
-  <h1>Lista de palabras </h1>
+  <!--<h1>Lista de palabras </h1>-->
 </div>
 
 <form>
   <mat-form-field>
-    <mat-label>Buscar anagrama</mat-label>
+    <!--<mat-label>Buscar anagrama</mat-label>-->
     <input matInput (keyup)="onSearch($event)">
   </mat-form-field>
 </form>
 
 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
-  <div class="example-box" *ngFor="let word of words" cdkDrag>{{word.value}}</div>
+  <div class="example-box" *ngFor="let word of words" cdkDrag [ngClass]="{'highlighted': anagrams.includes(word.value)}">{{word.value}}</div>
 </div>

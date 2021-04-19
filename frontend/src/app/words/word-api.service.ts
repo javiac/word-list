@@ -14,15 +14,12 @@ export class WordsApiService {
     throw new Error(err.message || 'Error: Unable to complete request.');
   }
 
-  public getWords(): Observable<Word[]> {
-    return this.http.get<Word[]>(`${API_URL}/words`);
+  public getWords(searchAnagram?: string): Observable<Word[]> {
+    const queryParams = searchAnagram !== undefined ? `?searchAnagram=${searchAnagram}` : '';
+    return this.http.get<Word[]>(`${API_URL}/words${queryParams}`);
   }
 
   public saveSortingChanges(data: any){
     return this.http.post(`${API_URL}/words/sort`, data);
-  }
-
-  public getAnagrams(value: string){
-    return this.http.get(`${API_URL}/words/anagrams?value=${value}`);
   }
 }
