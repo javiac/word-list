@@ -4,12 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pymongo = "*"
 flask = "*"
-marshmallow = "*"
+pymongo = "*"
 flask-cors = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.8"
