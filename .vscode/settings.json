@@ -1,3 +1,10 @@
 {
-    "python.pythonPath": "/home/javi/.local/share/virtualenvs/backend-6PWp0CAq/bin/python"
+    "workbench.colorTheme": "Default Light+",
+    "editor.fontSize": 14,
+    "window.zoomLevel": 0,
+    "breadcrumbs.enabled": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": true
+    },
+    "editor.formatOnSave": true,
 }
