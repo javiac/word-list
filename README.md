@@ -1,7 +1,7 @@
 # Installation
 
 ## Backend
-- git clone git@github.com:javiac/word-list.git\
+- git clone git@github.com:javiac/word-list.git
 ### Database
 - Install MongoDB (at least 4.4)
 - sudo mkdir /data
