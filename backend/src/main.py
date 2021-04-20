@@ -19,7 +19,7 @@ app = Flask(__name__,
 CORS(app)
 
 @app.route('/words', methods=['GET', 'DELETE', 'POST'])
-def get_words():
+def words():
     words = []
     if(request.method == 'GET'):
       words = get_all(request.args.get('searchAnagram'))
