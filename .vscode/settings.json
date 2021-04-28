@@ -7,4 +7,5 @@
         "source.fixAll.tslint": true
     },
     "editor.formatOnSave": true,
+    "python.pythonPath": "/home/javi/.local/share/virtualenvs/backend-dJAharMF/bin/python",
 }
