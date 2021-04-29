@@ -6,11 +6,11 @@ import datetime
 
 class WordService():
 
-    def __init__(self, db) -> None:
-        self.db = db
+    def __init__(self, db_client, db_name) -> None:
+        self.db = db_client[db_name]
 
-    def get_words(self, searchText: str):
-        collection = self.db.plytix.words
+    def get(self, searchText: str):
+        collection = self.db.words
 
         words = []
 
@@ -65,47 +65,34 @@ class WordService():
         return words
 
     def delete(self, word_id):
-        collection = self.db.plytix.words
+        collection = self.db.words
 
         words = []
 
         collection.delete_one({"_id": ObjectId(word_id)})
         index = 0
         for word in collection.find({}).sort('order', 1):
-            collection.update_one({'_id': word['_id']}, {
-                                  '$set': {'order': index}})
+            collection.update_one({'_id': word['_id']}, {'$set': {'order': index}})
         index += 1
-        result = collection.find({}).sort('order', 1)
-        for word in result:
-            words.append(word)
 
-        return words
+        return self.get_all()
 
     def create(self, word):
-        collection = self.db.plytix.words
-
-        words = []
+        collection = self.db.words
 
         word['createdAt'] = datetime.datetime.now()
         word['updatedAt'] = datetime.datetime.now()
-        word['order'] = -1
+        word['order'] = 0
 
+        collection.update_many({}, {'$inc': {'order': 1}})
         collection.insert_one(word)
 
-        index = 0
-        for word in collection.find({}).sort('order', 1):
-            collection.update_one({'_id': word['_id']}, {
-                                  '$set': {'order': index}})
-        index += 1
+        words = []
 
-        result = collection.find({}).sort('order', 1)
-        for word in result:
-            words.append(word)
-
-        return words
+        return self.get_all()
 
     def sort(self, sorting_changes):
-        collection = self.db.plytix.words
+        collection = self.db.words
 
         for sorting_change in sorting_changes:
             previous_index = sorting_change['previousIndex']
@@ -119,8 +106,8 @@ class WordService():
                 min_index = current_index
                 max_index = previous_index
 
-            result = collection.find(
-                {"order": {"$gte": min_index, "$lte": max_index}}).sort("order", 1)
+            result = collection.find({"order": {"$gte": min_index, "$lte": max_index}}).sort("order", 1)
+
             for word in result:
                 words.append(word)
 
@@ -133,17 +120,21 @@ class WordService():
             elif previous_index > current_index:
                 index = 1
                 for word in words:
-                    collection.update_one({"_id": word["_id"]}, {
-                        "$set": {"order": words[index % len(words)]["order"]}})
+                    collection.update_one({"_id": word["_id"]}, {"$set": {"order": words[index % len(words)]["order"]}})
                     index += 1
 
     def update(self, id, word):
-        collection = self.db.plytix.words
+        collection = self.db.words
 
         collection.update_one({'_id': ObjectId(id)}, {'$set': {
             'value': word['value'],
             'updatedAt': datetime.datetime.now()
         }})
+
+        return self.get_all()
+
+    def get_all(self):
+        collection = self.db.words
         result = collection.find({}).sort('order', 1)
 
         words = []

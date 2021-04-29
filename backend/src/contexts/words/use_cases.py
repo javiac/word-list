@@ -9,7 +9,7 @@ from src.contexts.words.word_service import WordService
 
 
 def get_all(searchText, word_service: WordService = Provide[Container.word_service]):
-    return word_service.get_words(searchText)
+    return word_service.get(searchText)
 
 
 def delete(word_id, word_service: WordService = Provide[Container.word_service]):

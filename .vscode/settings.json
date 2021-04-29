@@ -8,4 +8,8 @@
     },
     "editor.formatOnSave": true,
     "python.pythonPath": "/home/javi/.local/share/virtualenvs/backend-dJAharMF/bin/python",
+    "python.formatting.autopep8Args": [
+        "--max-line-length",
+        "200"
+    ]
 }
