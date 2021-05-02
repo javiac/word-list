@@ -5,7 +5,7 @@
 - Create, update and delete words
 - Dependency injection keeps one single connection to the database
 
-! [Selección_344](https://user-images.githubusercontent.com/8288832/115359701-38e09580-a1bf-11eb-9058-75cf38aa4fb3.png)
+![Selección_344](https://user-images.githubusercontent.com/8288832/115359701-38e09580-a1bf-11eb-9058-75cf38aa4fb3.png)
 
 # Installation
 
