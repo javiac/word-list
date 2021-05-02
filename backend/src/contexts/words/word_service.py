@@ -2,6 +2,7 @@ import logging
 from typing import Dict
 from bson import ObjectId
 import datetime
+import unidecode
 
 
 class WordService():
@@ -17,47 +18,7 @@ class WordService():
         if searchText is None:
             result = collection.find({}).sort('order', 1)
         else:
-            pipeline = [
-                {"$addFields":
-                 {
-                     "isAnagram":
-                     {"$function":
-                      {
-                          "body": Code("""
-                                function(value, searchValue) {
-                                    function unaccent(str) {
-                                    const map = {
-                                        'a' : 'á|à|ã|â|ä|À|Á|Ã|Â|Ä',
-                                        'e' : 'é|è|ê|ë|É|È|Ê|Ë',
-                                        'i' : 'í|ì|î|ï|Í|Ì|Î|Ï',
-                                        'o' : 'ó|ò|ô|õ|ö|Ó|Ò|Ô|Õ|Ö',
-                                        'u' : 'ú|ù|û|ü|Ú|Ù|Û|Ü',
-                                    };
-
-                                    for (var pattern in map) {
-                                        str = str.replace(new RegExp(map[pattern], 'g'), pattern);
-                                    }
-
-                                    return str;
-                                    }
-
-                                    return unaccent(value).toLowerCase().split('').sort().join().replace(/,/g, '') == unaccent(searchValue).toLowerCase().split('').sort().join().replace(/,/g, '')
-                            }
-                            """),
-                          "args": ["$value",  searchText],
-                          "lang": "js"
-                      }
-                      },
-                 }
-                 },
-                {
-                    "$match": {
-                        "isAnagram": True
-                    }
-                }
-            ]
-
-            result = collection.aggregate(pipeline)
+            result = collection.find({'sortedValue': "".join(sorted(unidecode.unidecode(searchText.lower())))}).sort('order', 1)
 
         for word in result:
             words.append(word)
@@ -83,6 +44,7 @@ class WordService():
         word['createdAt'] = datetime.datetime.now()
         word['updatedAt'] = datetime.datetime.now()
         word['order'] = 0
+        word['sortedValue'] = "".join(sorted(unidecode.unidecode(word['value'].lower())))
 
         collection.update_many({}, {'$inc': {'order': 1}})
         collection.insert_one(word)
@@ -97,31 +59,15 @@ class WordService():
         for sorting_change in sorting_changes:
             previous_index = sorting_change['previousIndex']
             current_index = sorting_change['currentIndex']
-            words = []
+
+            word_to_move = collection.find_one({'order': previous_index})
 
             if previous_index < current_index:
-                min_index = previous_index
-                max_index = current_index
+                collection.update_many({'order': {'$lte': current_index, '$gt': previous_index}}, {'$inc': {'order': -1}})
             elif previous_index > current_index:
-                min_index = current_index
-                max_index = previous_index
+                collection.update_many({'order': {'$gte': current_index, '$lt': previous_index}}, {'$inc': {'order': 1}})
 
-            result = collection.find({"order": {"$gte": min_index, "$lte": max_index}}).sort("order", 1)
-
-            for word in result:
-                words.append(word)
-
-            if previous_index < current_index:
-                index = -1
-                for word in words:
-                    collection.update_one({"_id": word["_id"]}, {
-                        "$set": {"order": words[index]["order"]}})
-                    index += 1
-            elif previous_index > current_index:
-                index = 1
-                for word in words:
-                    collection.update_one({"_id": word["_id"]}, {"$set": {"order": words[index % len(words)]["order"]}})
-                    index += 1
+            collection.update_one({'_id': word_to_move['_id']}, {'$set': {'order': current_index}})
 
     def update(self, id, word):
         collection = self.db.words
