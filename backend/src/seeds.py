@@ -6,7 +6,7 @@ import unidecode
 
 client = pymongo.MongoClient('mongodb://127.0.0.1:27017/')
 
-client.plytix.words.delete_many({})
+client.test.words.delete_many({})
 
 words = [
     {'value': 'Inglaterra', 'order': 0, 'createdAt': datetime.datetime.now(), 'updatedAt': datetime.datetime.now()},
@@ -33,6 +33,6 @@ words = [
 for word in words:
     word['sortedValue'] = "".join(sorted(unidecode.unidecode(word['value'].lower())))
 
-result = client.plytix.words.insert_many(words)
+result = client.test.words.insert_many(words)
 
 print('Inserted ', len(result.inserted_ids))

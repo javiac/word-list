@@ -11,5 +11,5 @@ class Container(containers.DeclarativeContainer):
     word_service = providers.Factory(
         WordService,
         db_client=database_client,
-        db_name='plytix'
+        db_name='test'
     )
